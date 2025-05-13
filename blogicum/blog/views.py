@@ -45,3 +45,10 @@ class CategoryListView(ListView):
         context = super().get_context_data(**kwargs)
         context['category'] = self.category
         return context
+
+
+class PostDetailView(DetailView):
+    model = Post
+    template_name = 'blog/detail.html'
+    context_object_name = 'post'
+    pk_url_kwarg = 'post_id'
