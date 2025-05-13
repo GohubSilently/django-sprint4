@@ -48,6 +48,8 @@ class CategoryListView(ListView):
 
 
 class PostDetailView(DetailView):
+    """Display the selected post."""
+
     model = Post
     template_name = 'blog/detail.html'
     context_object_name = 'post'
