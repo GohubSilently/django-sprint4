@@ -25,7 +25,10 @@ SECRET_KEY = 'django-insecure-9)df=+@7$e@1z38rfc(@s5+h3wbq#k)a!8k-a8ccz(2t=5q77$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
+]
 
 
 # Application definition
@@ -39,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'blog.apps.BlogConfig',
     'pages.apps.PagesConfig',
+    'django_bootstrap5'
 ]
 
 MIDDLEWARE = [
@@ -130,3 +134,6 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# CSRF
+CSRF_FAILURE_VIEW = 'pages.views.csrf_failure'
