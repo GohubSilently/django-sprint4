@@ -11,6 +11,11 @@ urlpatterns = [
         name='post_detail'
     ),
     path(
+        'posts/create/',
+        views.PostCreateView.as_view(),
+        name='create_post'
+    ),
+    path(
         'category/<slug:category_slug>/',
         views.CategoryListView.as_view(),
         name='category_posts'

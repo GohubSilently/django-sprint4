@@ -1,10 +1,14 @@
 from datetime import datetime
 
+from django.contrib.auth import get_user_model
 from django.shortcuts import render, get_object_or_404
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView
+from django.urls import reverse
 
-from . models import Post, Category
+from .models import Post, Category
+from .forms import PostForm
 
+User = get_user_model()
 
 class PostListView(ListView):
     """Display the Homepage."""
@@ -54,3 +58,24 @@ class PostDetailView(DetailView):
     template_name = 'blog/detail.html'
     context_object_name = 'post'
     pk_url_kwarg = 'post_id'
+
+
+class PostCreateView(CreateView):
+    """Create post."""
+
+    model = Post
+    form_class = PostForm
+    template_name = 'blog/create.html'
+
+    def form_valid(self, form):
+        form.instance.is_published = True
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse(
+            'blog:profile',
+            kwargs={
+                'username': self.request.user.username
+            }
+        )
