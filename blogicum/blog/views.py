@@ -3,8 +3,10 @@ from datetime import datetime
 from django.contrib.auth.forms import UserChangeForm
 from django.contrib.auth import get_user_model
 from django.shortcuts import render, get_object_or_404
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.views.generic.list import MultipleObjectMixin
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
+from django.utils import timezone
 
 from .models import Post, Category
 from .forms import PostForm
@@ -21,7 +23,7 @@ class PostListView(ListView):
         posts = super().get_queryset()
         return posts.filter(
             is_published=True,
-            pub_date__lte=datetime.now()
+            pub_date__lte=timezone.now()
         )
 
 
@@ -39,7 +41,7 @@ class CategoryListView(ListView):
         )
         return posts.filter(
             is_published=True,
-            pub_date__lte=datetime.now(),
+            pub_date__lte=timezone.now(),
             category=self.category,
         )
 
@@ -75,16 +77,39 @@ class PostCreateView(CreateView):
         )
 
 
-class ProfileDetailView(DetailView):
+class PostUpdateView(UpdateView):
+    model = Post
+    form_class = PostForm
+    pk_url_kwarg = 'post_id'
+    template_name = 'blog/create.html'
+
+    def get_success_url(self):
+        return reverse_lazy(
+            'blog:post_detail',
+            kwargs={
+                'post_id': self.get_object().pk
+            }
+        )
+
+
+class PostDeleteView(DeleteView):
+    model = Post
+    pk_url_kwarg = 'post_id'
+    template_name = 'blog/create.html'
+    success_url = reverse_lazy('blog:index')
+
+
+class Profile(DetailView, MultipleObjectMixin):
     model = User
     template_name = 'blog/profile.html'
     context_object_name = 'profile'
     slug_field = 'username'
     slug_url_kwarg = 'username'
+    paginate_by = 10
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['page_obj'] = self.object.posts.all()
+        object_list = Post.objects.filter(author=self.get_object())
+        context = super().get_context_data(object_list=object_list, **kwargs)
         return context
 
 
