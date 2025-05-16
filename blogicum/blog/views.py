@@ -194,20 +194,20 @@ class CommentUpdateView(LoginRequiredMixin, UpdateView):
     form_class = CommentForm
     pk_url_kwarg = 'comment_id'
     template_name = 'blog/comment.html'
-        
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         comment = self.get_object()
         context['comment'] = comment
         context['post'] = comment.post
         return context
-    
+
     def get_object(self, queryset=None):
         comment = super().get_object(queryset)
         if comment.author != self.request.user:
             raise Http404()
         return comment
-    
+
     def get_success_url(self):
         comment = self.get_object()
         return reverse_lazy(
@@ -222,13 +222,13 @@ class CommentDeleteView(LoginRequiredMixin, DeleteView):
     model = Comment
     pk_url_kwarg = 'comment_id'
     template_name = 'blog/comment.html'
-    
+
     def get_object(self, queryset=None):
         comment = super().get_object(queryset)
         if comment.author != self.request.user:
             raise Http404()
         return comment
-    
+
     def get_success_url(self):
         comment = self.get_object()
         return reverse_lazy(

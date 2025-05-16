@@ -112,7 +112,7 @@ class Post(CreatePublished):
 
     def comment_count(self):
         return self.comments.count()
-    
+
     def __str__(self):
         return (
             f'{self.title[:100]}'
