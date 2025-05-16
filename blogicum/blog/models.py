@@ -110,6 +110,9 @@ class Post(CreatePublished):
         verbose_name_plural = 'Публикации'
         ordering = ('-pub_date',)
 
+    def comment_count(self):
+        return self.comments.count()
+    
     def __str__(self):
         return (
             f'{self.title[:100]}'
@@ -119,3 +122,24 @@ class Post(CreatePublished):
             f'{self.location}'
             f'{self.category}'
         )
+
+
+class Comment(CreatePublished):
+    text = models.TextField(
+        verbose_name='Текст'
+    )
+    post = models.ForeignKey(
+        Post,
+        on_delete=models.CASCADE,
+        related_name='comments'
+    )
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name='Автор публикации',
+        related_name='comments'
+    )
+
+    class Meta:
+        verbose_name = 'комментарий'
+        verbose_name_plural = 'Комментарии'
