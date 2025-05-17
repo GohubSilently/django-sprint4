@@ -1,4 +1,3 @@
-from django.db.models import Count
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
@@ -46,6 +45,7 @@ def get_published_posts(queryset):
         pub_date__lte=timezone.now()
     )
 
+
 def add_comment_count(posts):
     for post in posts:
         post.comment_count = post.comments.count()
@@ -91,7 +91,7 @@ class PostDetailView(DetailView):
         post = super().get_object(queryset)
         if post.author == self.request.user:
             return post
-        
+
         posts = get_published_posts(self.get_queryset())
         if not posts.filter(pk=post.pk):
             raise Http404('Пост не найден или не опубликован')
