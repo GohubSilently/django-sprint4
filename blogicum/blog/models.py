@@ -26,7 +26,6 @@ class Category(CreatePublished):
         verbose_name='Заголовок'
     )
     description = models.TextField(
-        blank=False,
         verbose_name='Описание'
     )
     slug = models.SlugField(
@@ -39,6 +38,7 @@ class Category(CreatePublished):
     class Meta:
         verbose_name = 'категория'
         verbose_name_plural = 'Категории'
+        ordering = ('title',)
 
     def __str__(self):
         return (
@@ -58,9 +58,10 @@ class Location(CreatePublished):
     class Meta:
         verbose_name = 'местоположение'
         verbose_name_plural = 'Местоположения'
+        ordering = ('name',)
 
     def __str__(self):
-        return f'{self.name[:100]}'
+        return self.name[:100]
 
 
 class Post(CreatePublished):
@@ -86,7 +87,6 @@ class Post(CreatePublished):
         User,
         on_delete=models.CASCADE,
         verbose_name='Автор публикации',
-        related_name='posts'
     )
 
     location = models.ForeignKey(
@@ -94,7 +94,6 @@ class Post(CreatePublished):
         on_delete=models.SET_NULL,
         null=True,
         verbose_name='Местоположение',
-        related_name='posts'
     )
 
     category = models.ForeignKey(
@@ -102,16 +101,13 @@ class Post(CreatePublished):
         on_delete=models.SET_NULL,
         null=True,
         verbose_name='Категория',
-        related_name='posts'
     )
 
     class Meta:
         verbose_name = 'публикация'
         verbose_name_plural = 'Публикации'
+        default_related_name = 'posts'
         ordering = ('-pub_date',)
-
-    def comment_count(self):
-        return self.comments.count()
 
     def __str__(self):
         return (
@@ -143,3 +139,4 @@ class Comment(CreatePublished):
     class Meta:
         verbose_name = 'комментарий'
         verbose_name_plural = 'Комментарии'
+        ordering = ('text',)
