@@ -101,9 +101,9 @@ class PostDetailView(DetailView):
         if self.request.user.is_authenticated:
             return get_published_posts(
                 posts
-                ) | posts.filter(
+            ) | posts.filter(
                 author=self.request.user
-                )
+            )
         return get_published_posts(posts)
 
     def get_object(self, queryset=None):
