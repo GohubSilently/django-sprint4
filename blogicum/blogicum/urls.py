@@ -1,16 +1,21 @@
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.views import LogoutView
 from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib import admin
 from django.views.generic.edit import CreateView
 from django.urls import path, include, reverse_lazy
+from .views import CustomLogoutView
 
 
 urlpatterns = [
     path(
         'admin/',
         admin.site.urls
+    ),
+    path(
+        'auth/logout/',
+        CustomLogoutView.as_view(),
+        name='logout'
     ),
     path(
         'auth/',
@@ -24,11 +29,6 @@ urlpatterns = [
             success_url=reverse_lazy('blog:index')
         ),
         name='registration'
-    ),
-    path(
-        'auth/logout/',
-        LogoutView.as_view(),
-        name='logout'
     ),
     path(
         'pages/',
