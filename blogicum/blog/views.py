@@ -70,14 +70,14 @@ def get_posts(
             is_published=True,
             category__is_published=True,
             pub_date__lte=timezone.now()
-        ).order_by('-pub_date')
+        )
     if count_comment:
         posts = posts.annotate(
             comment_count=Count('comments')).order_by('-pub_date')
     return posts
 
 
-def paginate_posts(request, queryset, per_page=None):
+def paginate_posts(request, queryset, per_page=POSTS_ON_PAGE):
     return Paginator(queryset, per_page).get_page(request.GET.get('page'))
 
 
@@ -174,12 +174,17 @@ class Profile(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         author = self.object
-        posts = get_posts(
+        get_posts(
             author.posts.all(),
             filter=self.request.user != author)
 
         context['page_obj'] = paginate_posts(
-            self.request, posts, self.paginate_by
+            self.request,
+            get_posts(
+                author.posts.all(),
+                filter=self.request.user != author
+            ),
+            self.paginate_by
         )
         return context
 
